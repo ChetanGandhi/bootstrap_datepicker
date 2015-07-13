@@ -5,8 +5,6 @@ function Decorate($provide)
     $provide.decorator('daypickerDirective', function($delegate)
     {
         var directive = $delegate[0];
-
-        // Get the original link method
         var originalLink = directive.link;
 
         directive.compile = function(scope, element, attrs, ctrl)
@@ -15,11 +13,10 @@ function Decorate($provide)
             {
                 originalLink(scope, element, attrs, ctrl);
 
-                // Get the value for the 'custom-class' attribute and assign it to the scope.
-                // This is the same the original link method does for the `vertical` and ``justified` attributes
                 scope.customHandler = function()
                 {
-                    console.log("custom link is working.");
+                    //scope.showWeeks = !scope.showWeeks;
+                    scope.toggleMode();
                 };
             }
         }
