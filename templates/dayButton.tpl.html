@@ -1,0 +1,3 @@
+<button type="button" style="min-width:100%;" class="btn btn-default btn-sm" ng-class="{'btn-info': dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1" data-toggle="tooltip">
+    <span ng-class="::{'text-muted': dt.secondary, 'text-info': dt.current}">{{::dt.label}}</span>
+</button>

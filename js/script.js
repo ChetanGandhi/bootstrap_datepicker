@@ -7,7 +7,7 @@
             {
                 scope.showWeeks = !scope.showWeeks;
             },
-            lableProvider:function(date)
+            lableProvider: function(date)
             {
                 var today = new Date();
                 var MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -39,6 +39,11 @@
                 var directive = $delegate[0];
                 var originalLink = directive.link;
 
+                directive.templateUrl = function(element, attrs)
+                {
+                        return attrs.templateUrl || "templates/daypickerOverride.tpl.html";
+                };
+
                 directive.compile = function(scope, element, attrs, ctrl)
                 {
                     return function(scope, element, attrs, ctrl)
@@ -49,14 +54,56 @@
 
                         scope.showHideWeeks = customInjectors.showHideWeeks;
                         scope.lableProvider = customInjectors.lableProvider;
+
+                        // Uncomment below code to use tooltip selector,
+                        // add .custom-tooltip' as class and 'dt' as attribute to button
+                        // in template and remove the 'date-button' directive from template.
+                        //
+                        //Code:
+                        //-----------------------
+                        // <button type="button" dt="{{dt}}" style="min-width:100%;" class="btn btn-default btn-sm custom-tooltip" ng-class="{'btn-info': dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="::{'text-muted': dt.secondary, 'text-info': dt.current}">{{::dt.label}}</span></button>
+                        //-----------------------
+                        //
+                        // $(element).tooltip({
+                        //     selector: '.custom-tooltip',
+                        //     title: function(){
+                        //         console.log($(this));
+                        //         var dt = JSON.parse(this.getAttribute("dt"));
+                        //         console.log(dt);
+                        //         return scope.lableProvider(new Date(dt.date));
+                        //     },
+                        //     placement: "bottom",
+                        //     trigger: "hover"
+                        // });
                     }
                 }
-
-                directive.templateUrl = "templates/daypickerOverride.tpl.html";
 
                 return $delegate;
             });
         }
+
+        angular.module('ui.bootstrap.datepicker').directive('dayButton', function()
+        {
+            var link = function(scope, element, attrs, ctrl)
+            {
+                $("[data-toggle='tooltip']").tooltip({
+                    title: function()
+                    {
+                        return scope.lableProvider(scope.dt.date);
+                    },
+                    placement: "bottom",
+                    trigger: "hover"
+                });
+            };
+
+            return {
+                link: link,
+                templateUrl: function(element, attrs)
+                {
+                    return attrs.templateUrl || "templates/dayButton.tpl.html";
+                }
+            };
+        });
 
         angular.module('sample.datepicker').controller('datePickerSampleController', function($scope)
         {
