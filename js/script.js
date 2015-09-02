@@ -19,13 +19,14 @@
                 tooltipEnabled: '='
             };
 
-            angular.forEach(scopeExtension, function (value, key) {
-              $delegate[0].$$isolateBindings[key] = {
-                attrName: key,
-                mode: value,
-                optional: true
-            };
-        });
+            angular.forEach(scopeExtension, function (value, key)
+            {
+                directive.$$isolateBindings[key] = {
+                    attrName: key,
+                    mode: value,
+                    optional: true
+                };
+            });
 
             return $delegate;
         });
@@ -47,7 +48,7 @@
         {
             if(scope.tooltipEnabled)
             {
-                $("[data-toggle='tooltip']").tooltip({
+                $(element).find("[data-toggle='tooltip']").tooltip({
                     title: function()
                     {
                         return scope.tooltipProvider(scope.dt);
@@ -67,43 +68,16 @@
         };
     });
 
-    angular.module('sample.datepicker').directive('datepickerWrapper', function()
-    {
-        var link = function(scope, element, attrs, ctrl) {};
-
-        return {
-            link: link,
-            templateUrl: "templates/datepickerWrapper.tpl.html"
-        };
-    });
-
     angular.module('sample.datepicker').controller('datePickerSampleController', function($scope)
     {
-        $scope.tooltipProviderOne = function(date)
+        $scope.tooltipProvider = function(date)
         {
-            var today = new Date();
-            var MS_PER_DAY = 1000 * 60 * 60 * 24;
-            var utcToday = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-            var utcDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
-
-            var diff = Math.floor((utcDate - utcToday) / MS_PER_DAY);
-
-            if(diff === 0)
-            {
-                return "T";
-            }
-
-            if(diff > 0)
-            {
-                return "T+" + diff;
-            }
-
-            return "T-" + Math.abs(diff);
+            return "This is a tooltip.";
         };
 
-        $scope.tooltipProviderTwo = function(date)
+        $scope.anotherTooltipProvider = function(date)
         {
-            return "C";
+            return "This is another tooltip.";
         };
 
         $scope.today = function()
@@ -120,7 +94,7 @@
 
         $scope.disabled = function(date, mode)
         {
-            return false; //(mode === "day" && (date.getDay() === 0 || date.getDay() === 6));
+            return (mode === "day" && (date.getDay() === 0 || date.getDay() === 6));
         };
 
         $scope.toggleMin = function()
@@ -151,8 +125,7 @@
         var afterTomorrow = new Date();
         afterTomorrow.setDate(afterTomorrow.getDate() + 2);
 
-        $scope.events = [
-        {
+        $scope.events = [{
             date: tomorrow,
             status: "full"
         },
